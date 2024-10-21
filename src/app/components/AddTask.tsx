@@ -4,10 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 
-
-
 const AddTask = () => {
-
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (

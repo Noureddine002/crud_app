@@ -27,12 +27,8 @@ const AddModal: React.FC<ModalProps> = ({ setIsOpen, isOpen }) => {
             <Label htmlFor="name" className="text-right">
               Task
             </Label>
-            <Input
-              id="name"
-              defaultValue=""
-              className="col-span-3"
-            />
-          </div>       
+            <Input id="name" defaultValue="" className="col-span-3" />
+          </div>
         </div>
         <DialogFooter>
           <Button type="submit">Add</Button>

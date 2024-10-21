@@ -6,10 +6,9 @@ const todosApi = axios.create({
 });
 
 export const getAllTodos = async (): Promise<ITask[]> => {
-  try{
+  try {
     const response = await todosApi.get("/todos");
     return response.data;
-
   } catch {
     return [];
   }

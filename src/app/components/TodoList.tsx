@@ -27,13 +27,8 @@ const TodoList: React.FC<TodoListProps> = ({ todos }) => {
         </TableHeader>
         <TableBody>
           {todos.length
-            ?
-              todos.map(todo => (
-                <Task key={todo.id} task={todo} />
-              ))
-            :
-              null
-          }
+            ? todos.map((todo) => <Task key={todo.id} task={todo} />)
+            : null}
         </TableBody>
       </Table>
     </div>

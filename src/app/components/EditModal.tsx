@@ -16,11 +16,10 @@ import { ITask } from "../../../types/task";
 interface ModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isOpen: boolean;
-  task: ITask
+  task: ITask;
 }
 
 const EditModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
-
   const [value, setValue] = useState(task.completed);
 
   useEffect(() => {

@@ -7,16 +7,15 @@ import { GoDotFill } from "react-icons/go";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import EditModal from "./EditModal";
-
-
+import DeleteModal from "./DeleteModal";
 
 interface TaskProps {
   task: ITask;
 }
 
 const Task: React.FC<TaskProps> = ({ task }) => {
-
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   return (
     <TableRow key={task.id}>
@@ -42,9 +41,12 @@ const Task: React.FC<TaskProps> = ({ task }) => {
           </button>
           <EditModal task={task} setIsOpen={setModalOpen} isOpen={modalOpen} />
         </>
-        <button>
-          <MdOutlineDeleteOutline className="text-red-500" size={20} />
-        </button>
+        <>
+          <button onClick={() => setDeleteModalOpen(true)}>
+            <MdOutlineDeleteOutline className="text-red-500" size={20} />
+          </button>
+          <DeleteModal task={task} setIsOpen={setDeleteModalOpen} isOpen={deleteModalOpen} />
+        </>
       </TableCell>
     </TableRow>
   );
