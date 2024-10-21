@@ -1,0 +1,19 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "text": "grill yourself",
+      "completed": true
+    },
+    {
+      "id": "2",
+      "text": "young man",
+      "completed": false
+    },
+    {
+      "id": "3",
+      "text": "sok me coc",
+      "completed": false
+    }
+  ]
+}
