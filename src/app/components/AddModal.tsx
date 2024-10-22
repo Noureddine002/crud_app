@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addTodo } from "../api/todosApi";
 
@@ -22,13 +22,17 @@ interface ModalProps {
 const AddModal: React.FC<ModalProps> = ({ setIsOpen, isOpen }) => {
   
   const [taskText, setTaskText] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const queryClient = useQueryClient();
+
+
 
   const addTaskMutation = useMutation({
     mutationFn: addTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
       setTaskText("");
+      setErrorMessage("");
       setIsOpen(false);
     },
     onError: (error) => {
@@ -36,10 +40,23 @@ const AddModal: React.FC<ModalProps> = ({ setIsOpen, isOpen }) => {
     },
   });
 
+  useEffect(() => {
+    if (!isOpen) {
+      setTaskText("");
+      setErrorMessage("");
+    }
+  }, [isOpen]);
+
     const handleAddTask = () => {
-      if (taskText.trim()) {
-        addTaskMutation.mutate(taskText);
+      if (taskText.trim().length < 3) {
+        setErrorMessage("Task must be at least 3 characters long");
+        return;
+      } else if (taskText.length > 50) {
+        setErrorMessage("Task cannot exceed 50 characters");
+        return;
       }
+      setErrorMessage("");
+      addTaskMutation.mutate(taskText);
     };
 
   return (
@@ -61,6 +78,9 @@ const AddModal: React.FC<ModalProps> = ({ setIsOpen, isOpen }) => {
               onChange={(e) => setTaskText(e.target.value)}
             />
           </div>
+          {errorMessage && (
+            <p className="text-red-500 text-sm col-span-4">{errorMessage}</p>
+          )}
         </div>
         <DialogFooter>
           <Button onClick={handleAddTask}>Add</Button>

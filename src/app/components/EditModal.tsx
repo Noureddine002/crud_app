@@ -25,11 +25,16 @@ const EditModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
   
   const [value, setValue] = useState(task.completed);
   const [taskText, setTaskText] = useState(task.text);
+  const [errorMessage, setErrorMessage] = useState("");
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    setValue(task.completed);
-  }, [task.completed, isOpen]);
+    if (isOpen) {
+      setTaskText(task.text); 
+      setValue(task.completed);
+      setErrorMessage("");
+    }
+  }, [isOpen, task]);
 
   const UpdateTaskMutation = useMutation({
     mutationFn: ({
@@ -43,6 +48,7 @@ const EditModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
     }) => updateTodo(id, text, completed),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+      setErrorMessage("");
       setIsOpen(false);
     },
     onError: (error) => {
@@ -51,13 +57,19 @@ const EditModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
   });
 
   const handleUpdateTask = () => {
-    if (taskText.trim()) {
-      UpdateTaskMutation.mutate({
-        id: task.id,
-        text: taskText,
-        completed: value,
-      });
+    if (taskText.trim().length < 3) {
+      setErrorMessage("Task must be at least 3 characters long");
+      return;
+    } else if (taskText.length > 50) {
+      setErrorMessage("Task cannot exceed 50 characters");
+      return;
     }
+    setErrorMessage("");
+    UpdateTaskMutation.mutate({
+      id: task.id,
+      text: taskText,
+      completed: value,
+    });
   };
 
   return (
@@ -99,6 +111,9 @@ const EditModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
               {value ? "Completed" : "Uncompleted"}
             </label>
           </div>
+          {errorMessage && (
+            <p className="text-red-500 text-sm col-span-4">{errorMessage}</p>
+          )}
         </div>
         <DialogFooter>
           <Button onClick={handleUpdateTask}>Update</Button>
