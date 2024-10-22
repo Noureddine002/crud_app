@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTodos} from "../api/todosApi";
 import AddTask from "./AddTask";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { ITask } from "../../../types/task";
 
 const TodoList =  () => {
   
@@ -50,7 +51,7 @@ const TodoList =  () => {
           </TableHeader>
           <TableBody>
             {todos
-              ? todos.map((todo) => <Task key={todo.id} task={todo} />)
+              ? todos.map((todo: ITask) => <Task key={todo.id} task={todo} />)
               : null}
           </TableBody>
         </Table>

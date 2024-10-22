@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier src/ --write",
-    "build:start": "npm run build && npm run start",
+    "build:start": "prisma generate && prisma migrate deploy && npm run build && npm run start",
     "json-server": "json-server --watch data/todos.json --port 5000"
   },
   "dependencies": {
