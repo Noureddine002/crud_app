@@ -24,12 +24,12 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         {task.completed ? (
           <div className="flex items-center">
             <GoDotFill className="text-green-600" />
-            <span className="ml-2 text-green-600">Completed</span>
+            <span className="ml-2 text-green-500">Completed</span>
           </div>
         ) : (
           <div className="flex items-center">
             <GoDotFill className="text-red-600" />
-            <span className="ml-2 text-red-600">Uncompleted</span>
+            <span className="ml-2 text-red-500">Uncompleted</span>
           </div>
         )}
       </TableCell>

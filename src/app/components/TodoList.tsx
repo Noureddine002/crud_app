@@ -10,14 +10,13 @@ import {
 import React from "react";
 import Task from "./Task";
 import { useQuery } from "@tanstack/react-query";
-import { fetchTodos} from "../api/todosApi";
+import { fetchTodos } from "../api/todosApi";
 import AddTask from "./AddTask";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ITask } from "../../../types/task";
 
 const TodoList =  () => {
-  
-  
+
   const {
     data: todos,
     isLoading,
@@ -34,8 +33,6 @@ const TodoList =  () => {
   if(error){
     return <div>Error from our side, come back later... </div>;
   }
-
-  // const todos = await getAllTodos();
 
   return (
     <>
