@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -5,33 +7,55 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ITask } from "../../../types/task";
 import React from "react";
 import Task from "./Task";
+import { useQuery } from "@tanstack/react-query";
+import { fetchTodos} from "../api/todosApi";
+import AddTask from "./AddTask";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
-interface TodoListProps {
-  todos: ITask[];
-}
+const TodoList =  () => {
+  
+  
+  const {
+    data: todos,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["todos"],
+    queryFn: fetchTodos,
+  });
 
-const TodoList: React.FC<TodoListProps> = ({ todos }) => {
+  if(isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if(error){
+    return <div>Error from our side, come back later... </div>;
+  }
+
+  // const todos = await getAllTodos();
+
   return (
-    <div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead>Task</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {todos.length
-            ? todos.map((todo) => <Task key={todo.id} task={todo} />)
-            : null}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      <AddTask />
+      <div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Task</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {todos
+              ? todos.map((todo) => <Task key={todo.id} task={todo} />)
+              : null}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 };
 

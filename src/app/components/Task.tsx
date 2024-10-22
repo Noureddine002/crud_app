@@ -19,7 +19,6 @@ const Task: React.FC<TaskProps> = ({ task }) => {
 
   return (
     <TableRow key={task.id}>
-      <TableCell className="font-medium">{task.id}</TableCell>
       <TableCell>{task.text}</TableCell>
       <TableCell>
         {task.completed ? (

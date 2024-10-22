@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState, useEffect } from "react";
 import { ITask } from "../../../types/task";
+import { updateTodo } from "../api/todosApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,11 +22,43 @@ interface ModalProps {
 }
 
 const EditModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
+  
   const [value, setValue] = useState(task.completed);
+  const [taskText, setTaskText] = useState(task.text);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     setValue(task.completed);
   }, [task.completed, isOpen]);
+
+  const UpdateTaskMutation = useMutation({
+    mutationFn: ({
+      id,
+      text,
+      completed,
+    }: {
+      id: string;
+      text: string;
+      completed: boolean;
+    }) => updateTodo(id, text, completed),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+      setIsOpen(false);
+    },
+    onError: (error) => {
+      console.error("Failed to add task:", error);
+    },
+  });
+
+  const handleUpdateTask = () => {
+    if (taskText.trim()) {
+      UpdateTaskMutation.mutate({
+        id: task.id,
+        text: taskText,
+        completed: value,
+      });
+    }
+  };
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
@@ -37,7 +71,13 @@ const EditModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
             <Label htmlFor="name" className="text-right">
               Task
             </Label>
-            <Input id="name" defaultValue={task.text} className="col-span-3" />
+            <Input
+              id="text"
+              defaultValue=""
+              className="col-span-3"
+              value={taskText}
+              onChange={(e) => setTaskText(e.target.value)}
+            />
           </div>
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
@@ -61,7 +101,7 @@ const EditModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Update</Button>
+          <Button onClick={handleUpdateTask}>Update</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

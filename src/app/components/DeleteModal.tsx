@@ -4,14 +4,13 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ITask } from "../../../types/task";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteTodo } from "../api/todosApi";
 
 interface ModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +19,23 @@ interface ModalProps {
 }
 
 const DeleteModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
+  
+  const queryClient = useQueryClient();
+  
+  const deleteTaskMutation = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+      setIsOpen(false);
+    },
+    onError: (error) => {
+      console.error("Failed to add task:", error);
+    },
+  });
+
+  const handleDeleteTask = async () => {
+    deleteTaskMutation.mutate(task.id);
+  };
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
@@ -27,7 +43,9 @@ const DeleteModal: React.FC<ModalProps> = ({ task, setIsOpen, isOpen }) => {
         <DialogHeader>
           <DialogTitle>Are you sure you want to delete this task ?</DialogTitle>
         </DialogHeader>
-          <Button variant={"destructive"} type="submit">Delete</Button>
+        <Button variant={"destructive"} onClick={handleDeleteTask}>
+          Delete
+        </Button>
       </DialogContent>
     </Dialog>
   );
