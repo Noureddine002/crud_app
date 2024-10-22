@@ -25,3 +25,4 @@ Minimalistic To-do app with CRUD operations.
 
 
 
+(.env file is pushed to the repo publicly on purpose for easier testing)
